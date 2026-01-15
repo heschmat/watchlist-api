@@ -1,0 +1,50 @@
+services:
+  api:
+    build:
+      context: .
+      # when DEV build arg is set to true, the Dockerfile will install dev dependencies
+      # this will override the default of false in the Dockerfile
+      args:
+        - DEV=true
+    container_name: drf-api
+    user: "1000:1000"
+    ports:
+      - "8000:8000"
+    # live code reloading
+    volumes:
+      - .:/code
+      - static-data-dev:/vol/web
+    # we can override the default command with something else when running `docker compose run api <command>`
+    command: python manage.py runserver 0.0.0.0:8000
+    # command: >
+    #   sh -c "python manage.py wait_for_db &&
+    #          python manage.py migrate &&
+    #          python manage.py runserver 0.0.0.0:8000"
+    # depends_on:
+    #   - db
+    environment:
+      # the keys match the settings in config/settings.py
+      - DB_HOST=db
+      - DB_NAME=db_dev
+      - DB_USER=user_dev
+      - DB_PASS=ChangeMe123!
+      - DB_PORT=5432
+      - DEBUG=1
+      - SECRET_KEY=${DJANGO_SECRET_KEY:-}
+      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-}
+  db:
+    image: postgres:18
+    container_name: pg18
+    environment:
+      POSTGRES_USER: user_dev
+      POSTGRES_PASSWORD: ChangeMe123!
+      POSTGRES_DB: db_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      # - postgres-data-dev:/var/lib/postgresql/data/
+      - postgres-data-dev:/var/lib/postgresql
+
+volumes:
+  postgres-data-dev:
+  static-data-dev:

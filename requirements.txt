@@ -1,0 +1,11 @@
+python-dotenv
+Django
+djangorestframework
+djangorestframework-simplejwt
+psycopg[binary]>=3.2
+pillow
+drf-spectacular
+django-cors-headers
+gunicorn
+# whitenoise
+boto3
