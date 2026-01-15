@@ -15,13 +15,12 @@ services:
       - .:/code
       - static-data-dev:/vol/web
     # we can override the default command with something else when running `docker compose run api <command>`
-    command: python manage.py runserver 0.0.0.0:8000
-    # command: >
-    #   sh -c "python manage.py wait_for_db &&
-    #          python manage.py migrate &&
-    #          python manage.py runserver 0.0.0.0:8000"
-    # depends_on:
-    #   - db
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
     environment:
       # the keys match the settings in config/settings.py
       - DB_HOST=db

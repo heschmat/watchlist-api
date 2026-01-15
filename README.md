@@ -48,3 +48,55 @@ Ideally, simply remove anything related to db in docker compose and have the com
 # now this should work:
 docker compose up api
 ```
+
+
+## core
+setup `wait_for_db.py`
+
+
+## users
+
+```sh
+docker compose run --rm api python manage.py makemigrations
+```
+
+Now let's test:
+```sh
+export PAYLOAD='{
+  "email": "kat@hotmail.com",
+  "password": "Berlin97"
+}'
+
+# create a user
+curl -X POST http://localhost:8000/api/users/register/ \
+  -H "Content-Type: application/json" \
+  -d "$PAYLOAD"
+
+# to create a super user:
+docker compose run --rm api python manage.py createsuperuser
+
+# gives you refresh & access token:
+curl -X POST http://localhost:8000/api/users/login/ \
+  -H "Content-Type: application/json" \
+  -d "$PAYLOAD"
+```
+
+verify if the users have been created:
+```sh
+docker exec -it pg18 psql -U user_dev -d db_dev
+
+# or:
+# this will requires password
+docker compose run --rm db \
+  psql -h db -U user_dev -d db_dev
+
+```
+
+
+```sh
+
+curl http://localhost:8000/api/users/me/ \
+  -H "Authorization: Bearer $ACC_TOKEN"
+
+```
+
