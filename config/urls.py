@@ -23,10 +23,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # health check
     path('healthz/', lambda request: JsonResponse({'status': 'healthy'})),
+    # app urls
     path('api/users/', include('users.urls')),
+    path('api/movies/', include('movies.urls')),
 ]
 
-# For API schema and documentation
+# For API schema and documentation ------------ #
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns += [
@@ -34,3 +36,8 @@ urlpatterns += [
     path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+
+# media --------------------------------------- #
+from django.conf import settings
+from django.conf.urls.static import static
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

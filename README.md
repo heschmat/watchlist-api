@@ -128,3 +128,80 @@ urlpatterns += [
 ]
 
 ```
+
+## movies
+
+```sh
+curl -X POST http://localhost:8000/api/users/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "kimi@hotmail.com",
+    "password": "Berlin97"
+  }'
+
+# or simply:
+ADMIN_TOKEN=$(curl -s -X POST http://localhost:8000/api/users/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "kimi@hotmail.com",
+    "password": "Berlin97"
+  }' | jq -r .access)
+
+# you may need to run
+sudo apt update
+sudo apt install -y jq
+
+# curl -X POST http://localhost:8000/api/movies/ \
+#   -H "Authorization: Bearer $ADMIN_TOKEN" \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "title": "Interstellar",
+#     "description": "Space and time",
+#     "year": 2014
+#   }'
+
+
+curl http://localhost:8000/api/movies/
+
+
+curl -L -o inception.jpg "https://i.ebayimg.com/images/g/LlUAAOSwm8VUwoRL/s-l1200.jpg"
+
+HOST_="http://localhost:8000"
+
+curl -X POST "$HOST_/api/movies/" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -F "title=Inception" \
+  -F "description=A mind-bending thriller about dreams within dreams." \
+  -F "release_year=2010" \
+  -F "poster=@inception.jpg"
+
+
+# post a review
+curl -X POST http://localhost:8000/api/movies/1/reviews/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "That docking scene is legendary."
+  }'
+
+# login with another user and post a review:
+curl -X POST http://localhost:8000/api/movies/1/reviews/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rating": 3,
+    "text": "don'\''t get the hype"
+  }'
+
+# get the reviews for a movie
+curl http://localhost:8000/api/movies/1/reviews/ \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# fav a movie
+curl -X POST http://localhost:8000/api/movies/1/favorite/ \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# get your favorite movies
+curl http://localhost:8000/api/movies/favorites/ \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```

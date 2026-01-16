@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # local apps
     'core',
     'users',
+    'movies',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL = "/media/"            # <—— URL prefix used to serve those files
+MEDIA_ROOT = "/vol/web/media"    # <—— Filesystem path where uploaded files are stored
+# MEDIA_ROOT = BASE_DIR / "media"
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ================================================================= #
 AUTH_USER_MODEL = "users.User"
