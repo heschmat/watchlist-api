@@ -213,3 +213,28 @@ Add baseline django config to `config/settings.py`
 
 Add/use custom formatter, `core/logging.py`
 
+
+## Nginx + Gunicorn/Uvicorn
+
+```md
+Browser
+  ↓
+Nginx (80)
+  ├── /static/  → served directly
+  ├── /media/   → served directly
+  └── /api/     → proxied to Gunicorn
+                    ↓
+                Django (Gunicorn + Uvicorn workers)
+                    ↓
+                PostgreSQL
+
+```
+
+```sh
+chmod +x entrypoint.sh
+
+```
+
+### nginx
+
+💡 The official Nginx image automatically runs `envsubst` on `/etc/nginx/templates/*.template`

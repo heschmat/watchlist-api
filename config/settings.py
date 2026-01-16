@@ -25,9 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&@k$e4cqha+-g^p_=o#t#93g+0*=*oma)xp1w#8mzfc1cust6_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG") == "1"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+print("+++ ALLOWED_HOSTS:", ALLOWED_HOSTS)
 
 
 # Application definition
@@ -131,6 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = "/vol/web/static"
 
 MEDIA_URL = "/media/"            # <—— URL prefix used to serve those files
 MEDIA_ROOT = "/vol/web/media"    # <—— Filesystem path where uploaded files are stored
@@ -160,6 +162,16 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
 
+    "filters": {
+        "ignore_healthz": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": lambda record: (
+                not hasattr(record, "request")
+                or record.request.path != "/healthz/"
+            ),
+        },
+    },
+
     "formatters": {
         "verbose": {
             # "format": "[{asctime}] {levelname} {name} {message}",
@@ -178,6 +190,7 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
             "stream": "ext://sys.stdout",  # important for Docker
+            "filters": ["ignore_healthz"],  # 👈 APPLY FILTER
         },
     },
 
@@ -198,4 +211,5 @@ LOGGING = {
             "propagate": False,
         },
     },
+
 }

@@ -8,13 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Ensures that Python output is sent straight to terminal (e.g. your container log) without being first buffered
 ENV PYTHONUNBUFFERED=1
 
-ENV DJANGO_SETTINGS_MODULE=config.settings
-
 COPY ./requirements*.txt /tmp/.
 WORKDIR /code
-
-COPY ./entrypoint.sh /entrypoint.sh
-
 COPY . .
 
 # N.B. This doesn't expose. It's just documentation for users of the image.
@@ -24,7 +19,6 @@ ARG DEV=false
 RUN pip install --upgrade pip && \
     apt-get update && apt-get install -y --no-install-recommends \
         postgresql-client \
-        curl \
     && \
     pip install -r /tmp/requirements.txt && \
     if [ "$DEV" = "true" ] ; then pip install -r /tmp/requirements.dev.txt ; fi && \
@@ -40,4 +34,5 @@ RUN pip install --upgrade pip && \
 
 USER ${DJANGO_USER}
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Run Django development server
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

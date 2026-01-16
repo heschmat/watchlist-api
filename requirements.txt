@@ -7,5 +7,6 @@ pillow
 drf-spectacular
 django-cors-headers
 gunicorn
+uvicorn[standard]
 # whitenoise
 boto3
