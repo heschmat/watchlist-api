@@ -205,3 +205,11 @@ curl -X POST http://localhost:8000/api/movies/1/favorite/ \
 curl http://localhost:8000/api/movies/favorites/ \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ```
+
+
+## logging
+
+Add baseline django config to `config/settings.py`
+
+Add/use custom formatter, `core/logging.py`
+
