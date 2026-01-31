@@ -19,10 +19,18 @@ from django.urls import path, include
 
 from django.http import JsonResponse
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # health check
     path('healthz/', lambda request: JsonResponse({'status': 'healthy'})),
+    # auth urls
+    path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # app urls
     path('api/users/', include('users.urls')),
     path('api/movies/', include('movies.urls')),

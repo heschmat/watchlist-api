@@ -1,13 +1,15 @@
 from django.conf import settings
 from django.db import models
 
+from core.validators import validate_image_file
+
 User = settings.AUTH_USER_MODEL
 
 
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    poster = models.ImageField(upload_to="movies/posters/")
+    poster = models.ImageField(upload_to="movies/posters/", validators=[validate_image_file])
     release_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -23,6 +25,7 @@ class Review(models.Model):
     text = models.TextField()
     image = models.ImageField(
         upload_to="movies/reviews/",
+        validators=[validate_image_file],
         null=True,
         blank=True,
     )

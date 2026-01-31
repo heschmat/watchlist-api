@@ -23,9 +23,8 @@ services:
       sh -c "
       gunicorn config.asgi:application
       --bind 0.0.0.0:8000
-      --workers $(nproc)
+      --workers 2
       --worker-class uvicorn.workers.UvicornWorker
-
       --error-logfile -
       "
    
@@ -45,8 +44,8 @@ services:
       - DB_USER=user_dev
       - DB_PASS=ChangeMe123!
       - DB_PORT=5432
-      - DEBUG=0
-      - SECRET_KEY=${DJANGO_SECRET_KEY:-}
+      - DEBUG=1
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-}
       - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-}
   db:
     image: postgres:18
