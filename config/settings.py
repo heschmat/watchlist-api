@@ -27,8 +27,13 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "1"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-print("+++ ALLOWED_HOSTS:", ALLOWED_HOSTS)
+ALLOWED_HOSTS = []
+
+if os.getenv("DJANGO_ALLOW_ASGI_HOST") == "true":
+    # Security is handled by SG + ALB, not Django.
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -138,6 +143,30 @@ MEDIA_URL = "/media/"            # <—— URL prefix used to serve those files
 MEDIA_ROOT = "/vol/web/media"    # <—— Filesystem path where uploaded files are stored
 # MEDIA_ROOT = BASE_DIR / "media"
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+if not DEBUG:
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"
+
+    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+    AWS_S3_REGION_NAME = os.environ["AWS_S3_REGION_NAME"]
+    AWS_S3_CUSTOM_DOMAIN = os.environ["CLOUDFRONT_DOMAIN"]
+    AWS_QUERYSTRING_AUTH = False
+    AWS_DEFAULT_ACL = None
+
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+    MEDIA_URL  = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "core.storage_backends.MediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "core.storage_backends.StaticStorage",
+        },
+    }
+
 
 # ================================================================= #
 AUTH_USER_MODEL = "users.User"

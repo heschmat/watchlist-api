@@ -11,4 +11,15 @@ echo "🎨 Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo "🚀 Starting server..."
-exec "$@"
+#exec "$@"
+
+# If no command is provided, run gunicorn by default
+if [ $# -eq 0 ]; then
+    exec gunicorn config.asgi:application \
+        --bind 0.0.0.0:8000 \
+        --workers 2 \
+        --worker-class uvicorn.workers.UvicornWorker \
+        --error-logfile -
+else
+    exec "$@"
+fi

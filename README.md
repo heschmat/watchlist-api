@@ -68,7 +68,8 @@ export PAYLOAD='{
 }'
 
 # create a user
-curl -X POST http://localhost:8000/api/users/register/ \
+URL_="http://localhost:8000"
+curl -X POST ${URL_}/api/users/register/ \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD"
 
@@ -76,7 +77,7 @@ curl -X POST http://localhost:8000/api/users/register/ \
 docker compose run --rm api python manage.py createsuperuser
 
 # gives you refresh & access token:
-curl -X POST http://localhost:8000/api/users/login/ \
+curl -X POST ${URL_}/api/users/login/ \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD"
 ```
@@ -95,7 +96,7 @@ docker compose run --rm db \
 
 ```sh
 
-curl http://localhost:8000/api/users/me/ \
+curl ${URL_}/api/users/me/ \
   -H "Authorization: Bearer $ACC_TOKEN"
 
 ```
@@ -140,7 +141,7 @@ curl -X POST http://localhost:8000/api/users/login/ \
   }'
 
 # or simply:
-ADMIN_TOKEN=$(curl -s -X POST http://localhost:8000/api/users/login/ \
+ADMIN_TOKEN=$(curl -s -X POST ${URL_}/api/users/login/ \
   -H "Content-Type: application/json" \
   -d '{
     "email": "kimi@hotmail.com",
